@@ -14,6 +14,8 @@ import { it } from "date-fns/locale";
 import { FiChevronRight, FiChevronLeft } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
 
+const API_URL = "https://backend-calendar-kcq0.onrender.com";
+
 function BookingCalendar() {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(null);
@@ -38,18 +40,18 @@ function BookingCalendar() {
 
   // Al seleccionar una fecha se consulta el backend para obtener los horarios disponibles (en intervalos de 30 minutos)
   useEffect(() => {
-    if (selectedDate) {
-      fetch(`http://localhost:5000/availability?date=${selectedDate.toISOString()}`)
-        .then((res) => res.json())
-        .then((data) => {
-          // Se espera que el backend retorne un array con horarios en formato "HH:mm" (e.g., "09:00", "09:30", etc.)
-          setAvailableTimes(data.availableTimes || []);
-        })
-        .catch((error) => {
-          console.error("Error fetching availability:", error);
-        });
-    }
-  }, [selectedDate]);
+  if (selectedDate) {
+    const formattedDate = format(selectedDate, "yyyy-MM-dd"); // Convertir fecha a formato compatible con el backend
+    fetch(`${API_URL}/availability?date=${formattedDate}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setAvailableTimes(data.availableTimes || []);
+      })
+      .catch((error) => {
+        console.error("Error fetching availability:", error);
+      });
+  }
+}, [selectedDate]);
 
   const nextMonth = () => {
     if (currentMonth < nextMonthLimit) {
@@ -100,26 +102,26 @@ function BookingCalendar() {
     };
 
     try {
-      const response = await fetch("http://localhost:5000/bookings", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...bookingData,
-          date: new Date(bookingData.date).toISOString(),
-        }),
-      });
-      const data = await response.json();
-      if (response.ok) {
-        // Se remueve el horario reservado de los horarios disponibles
-        setAvailableTimes(availableTimes.filter((time) => time !== selectedTime));
-        navigate("/thankyou");
-      } else {
-        console.error("Error:", data.error);
-      }
-    } catch (error) {
-      console.error("Error submitting booking:", error);
-    }
-  };
+  const formattedDate = format(bookingData.date, "yyyy-MM-dd"); // Formato compatible con el backend
+  const response = await fetch(`${API_URL}/bookings`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      ...bookingData,
+      date: formattedDate, // Usar el formato correcto en la solicitud
+    }),
+  });
+
+  const data = await response.json();
+  if (response.ok) {
+    setAvailableTimes(availableTimes.filter((time) => time !== selectedTime));
+    navigate("/thankyou");
+  } else {
+    console.error("Error:", data.error);
+  }
+} catch (error) {
+  console.error("Error submitting booking:", error);
+}
 
   return (
     <div className="w-full flex flex-col items-center mt-8">
