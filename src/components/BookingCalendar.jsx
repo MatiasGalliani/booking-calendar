@@ -40,18 +40,18 @@ function BookingCalendar() {
 
   // Al seleccionar una fecha se consulta el backend para obtener los horarios disponibles (en intervalos de 30 minutos)
   useEffect(() => {
-  if (selectedDate) {
-    const formattedDate = format(selectedDate, "yyyy-MM-dd"); // Convertir fecha a formato compatible con el backend
-    fetch(`${API_URL}/availability?date=${formattedDate}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setAvailableTimes(data.availableTimes || []);
-      })
-      .catch((error) => {
-        console.error("Error fetching availability:", error);
-      });
-  }
-}, [selectedDate]);
+    if (selectedDate) {
+      const formattedDate = format(selectedDate, "yyyy-MM-dd"); // Convertir fecha a formato compatible con el backend
+      fetch(`${API_URL}/availability?date=${formattedDate}`)
+        .then((res) => res.json())
+        .then((data) => {
+          setAvailableTimes(data.availableTimes || []);
+        })
+        .catch((error) => {
+          console.error("Error fetching availability:", error);
+        });
+    }
+  }, [selectedDate]);
 
   const nextMonth = () => {
     if (currentMonth < nextMonthLimit) {
@@ -102,26 +102,27 @@ function BookingCalendar() {
     };
 
     try {
-  const formattedDate = format(bookingData.date, "yyyy-MM-dd"); // Formato compatible con el backend
-  const response = await fetch(`${API_URL}/bookings`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      ...bookingData,
-      date: formattedDate, // Usar el formato correcto en la solicitud
-    }),
-  });
+      const formattedDate = format(bookingData.date, "yyyy-MM-dd"); // Formato compatible con el backend
+      const response = await fetch(`${API_URL}/bookings`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...bookingData,
+          date: formattedDate, // Usar el formato correcto en la solicitud
+        }),
+      });
 
-  const data = await response.json();
-  if (response.ok) {
-    setAvailableTimes(availableTimes.filter((time) => time !== selectedTime));
-    navigate("/thankyou");
-  } else {
-    console.error("Error:", data.error);
-  }
-} catch (error) {
-  console.error("Error submitting booking:", error);
-}
+      const data = await response.json();
+      if (response.ok) {
+        setAvailableTimes(availableTimes.filter((time) => time !== selectedTime));
+        navigate("/thankyou");
+      } else {
+        console.error("Error:", data.error);
+      }
+    } catch (error) {
+      console.error("Error submitting booking:", error);
+    }
+  };
 
   return (
     <div className="w-full flex flex-col items-center mt-8">
@@ -134,11 +135,10 @@ function BookingCalendar() {
             <button
               onClick={prevMonth}
               disabled={format(currentMonth, "yyyy-MM") === format(today, "yyyy-MM")}
-              className={`text-gray-700 hover:text-black transition ${
-                format(currentMonth, "yyyy-MM") === format(today, "yyyy-MM")
+              className={`text-gray-700 hover:text-black transition ${format(currentMonth, "yyyy-MM") === format(today, "yyyy-MM")
                   ? "text-gray-400 cursor-not-allowed"
                   : ""
-              }`}
+                }`}
             >
               <FiChevronLeft size={24} />
             </button>
@@ -148,11 +148,10 @@ function BookingCalendar() {
             <button
               onClick={nextMonth}
               disabled={format(currentMonth, "yyyy-MM") === format(nextMonthLimit, "yyyy-MM")}
-              className={`text-gray-700 hover:text-black transition ${
-                format(currentMonth, "yyyy-MM") === format(nextMonthLimit, "yyyy-MM")
+              className={`text-gray-700 hover:text-black transition ${format(currentMonth, "yyyy-MM") === format(nextMonthLimit, "yyyy-MM")
                   ? "text-gray-400 cursor-not-allowed"
                   : ""
-              }`}
+                }`}
             >
               <FiChevronRight size={24} />
             </button>
@@ -184,17 +183,16 @@ function BookingCalendar() {
                       key={day}
                       onClick={() => handleDateClick(day)}
                       disabled={isPast || isUnavailable}
-                      className={`p-2 w-10 h-10 text-center rounded-full border ${
-                        isPast
+                      className={`p-2 w-10 h-10 text-center rounded-full border ${isPast
                           ? "text-gray-400 cursor-not-allowed border-transparent"
                           : isUnavailable
-                          ? "bg-gray-300 text-gray-600 border-gray-400 cursor-not-allowed"
-                          : isToday(day)
-                          ? "bg-green-500 text-white border-transparent"
-                          : selectedDate && format(selectedDate, "yyyy-MM-dd") === format(day, "yyyy-MM-dd")
-                          ? "bg-blue-600 text-white border-transparent"
-                          : "hover:bg-gray-200 border-transparent"
-                      }`}
+                            ? "bg-gray-300 text-gray-600 border-gray-400 cursor-not-allowed"
+                            : isToday(day)
+                              ? "bg-green-500 text-white border-transparent"
+                              : selectedDate && format(selectedDate, "yyyy-MM-dd") === format(day, "yyyy-MM-dd")
+                                ? "bg-blue-600 text-white border-transparent"
+                                : "hover:bg-gray-200 border-transparent"
+                        }`}
                     >
                       {formattedDay}
                     </button>
@@ -220,11 +218,10 @@ function BookingCalendar() {
                     <button
                       key={time}
                       onClick={() => handleTimeClick(time)}
-                      className={`p-2 w-16 h-10 text-center rounded-full border transition-all ${
-                        selectedTime === time
+                      className={`p-2 w-16 h-10 text-center rounded-full border transition-all ${selectedTime === time
                           ? "bg-gray-600 text-white border-transparent"
                           : "border-gray-400 hover:bg-gray-200"
-                      }`}
+                        }`}
                     >
                       {time}
                     </button>
