@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
 import logo from "./assets/LOGO-CREDITPLAN.png";
 import picturenico from "./assets/foto-ejemplo-agente.png";
 import Booking from "./booking"; // Importamos la nueva página
@@ -8,11 +8,11 @@ import AdminDashboard from "./AdminDashboard";
 
 function App() {
   return (
-    <Router basename="/booking-calendar"> {/* 👈 Aquí agregamos basename */}
+    <Router basename="/booking-calendar"> {/* 👈 Configura la base URL para GitHub Pages */}
       <Routes>
         {/* Página de inicio */}
         <Route
-          path="/"
+          path=""
           element={
             <div>
               {/* Logo - Alineado a la izquierda en pantallas grandes, centrado en móviles */}
@@ -28,23 +28,17 @@ function App() {
 
               {/* Tarjetas de agentes */}
               <div className="flex justify-center items-center flex-wrap gap-12 p-10">
-                <AgentCard name={"Nico Falcinelli"} picture={picturenico} agentlink={"/booking"} />
+                <AgentCard name={"Nico Falcinelli"} picture={picturenico} agentlink="booking" />
               </div>
             </div>
           }
         />
 
-        {/* Página de Booking */}
-        <Route path="/booking" element={<Booking />} />
-
-        {/* Página de Agradecimiento */}
-        <Route path="/thankyou" element={<ThankYou />} />
-
-        {/* Página de Login de Admin */}
-        <Route path="/loginadmin" element={<LoginAdmin />} />
-
-        {/* Página de Admin */}
-        <Route path="/admin" element={<AdminDashboard />} />
+        {/* Páginas */}
+        <Route path="booking" element={<Booking />} />
+        <Route path="thankyou" element={<ThankYou />} />
+        <Route path="loginadmin" element={<LoginAdmin />} />
+        <Route path="admin" element={<AdminDashboard />} />
       </Routes>
     </Router>
   );
@@ -59,16 +53,18 @@ export function SubTitle() {
 }
 
 export function AgentCard({ name, picture, agentlink }) {
+  const navigate = useNavigate(); // 👈 Usa React Router para manejar la navegación
+
   return (
     <article className="bg-gray-200 rounded-lg w-80 p-6 flex flex-col justify-center items-center shadow-xl">
       <img src={picture} alt="picture" className="w-40" />
       <h4 className="mt-6 text-2xl font-medium">{name}</h4>
-      <a
-        href={agentlink}
+      <button
+        onClick={() => navigate(agentlink)}
         className="mt-5 inline-block bg-blue-600 text-white px-10 py-3 rounded-xl hover:bg-blue-950 text-lg font-medium"
       >
         Prenota
-      </a>
+      </button>
     </article>
   );
 }
