@@ -8,7 +8,7 @@ import AdminDashboard from "./AdminDashboard";
 
 function App() {
   return (
-    <Router basename="/booking-calendar"> {/* 👈 Configura la base URL para GitHub Pages */}
+    <Router>
       <Routes>
         {/* Página de inicio */}
         <Route
@@ -34,7 +34,7 @@ function App() {
           }
         />
 
-        {/* Páginas */}
+        {/* Otras páginas */}
         <Route path="booking" element={<Booking />} />
         <Route path="thankyou" element={<ThankYou />} />
         <Route path="loginadmin" element={<LoginAdmin />} />
@@ -53,7 +53,7 @@ export function SubTitle() {
 }
 
 export function AgentCard({ name, picture, agentlink }) {
-  const navigate = useNavigate(); // 👈 Usa React Router para manejar la navegación
+  const navigate = useNavigate(); // Usa React Router para manejar la navegación
 
   return (
     <article className="bg-gray-200 rounded-lg w-80 p-6 flex flex-col justify-center items-center shadow-xl">
