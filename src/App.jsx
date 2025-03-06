@@ -8,7 +8,7 @@ import AdminDashboard from "./AdminDashboard";
 
 function App() {
   return (
-    <Router>
+    <Router basename="/booking-calendar"> {/* 👈 Aquí agregamos basename */}
       <Routes>
         {/* Página de inicio */}
         <Route
@@ -37,17 +37,15 @@ function App() {
         {/* Página de Booking */}
         <Route path="/booking" element={<Booking />} />
 
-      {/* Página de Agradecimiento */}
-      <Route path="/thankyou" element={<ThankYou />} />
+        {/* Página de Agradecimiento */}
+        <Route path="/thankyou" element={<ThankYou />} />
 
-      {/* Página de Login de Admin */}
-      <Route path="/loginadmin" element={<LoginAdmin />} />
+        {/* Página de Login de Admin */}
+        <Route path="/loginadmin" element={<LoginAdmin />} />
 
-      {/* Página de Admin */}
-      <Route path="/admin" element={<AdminDashboard />} />
-
+        {/* Página de Admin */}
+        <Route path="/admin" element={<AdminDashboard />} />
       </Routes>
-      
     </Router>
   );
 }
